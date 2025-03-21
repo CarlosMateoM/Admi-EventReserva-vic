@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
 import { HttpClient } from '@angular/common/http';
-import { AuthInterface, UserLogin } from './interface/auth.interface';
+import { AuthInterface, Me, UserLogin } from './interface/auth.interface';
 import { map, Observable, tap } from 'rxjs';
 import { UserStateService } from './state.service';
 
@@ -30,6 +30,14 @@ export class AuthService {
     return this.http.get<AuthInterface>(`${this.API_URL}/me`).pipe(
       tap((user: AuthInterface) => {
         this.userStateService.setUser(user); // Guarda el usuario en el estado
+      })
+    );
+  }
+
+  updateUser(user: Me): Observable<Me> {
+    return this.http.put<Me>(`${this.API_URL}/usuarios/${user.id}`, user).pipe(
+      tap((user: Me) => {
+        this.userStateService.setUser(user); // Actualiza el usuario en el estado
       })
     );
   }

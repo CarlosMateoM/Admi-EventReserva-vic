@@ -5,6 +5,9 @@ import { MeComponent } from './features/me/me.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LayoutComponent } from './shared/components/layout/layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { EventosComponent } from './features/eventos/eventos.component';
+import { EstadisticasComponent } from './features/estadisticas/estadisticas.component';
+import { ReportesComponent } from './features/reportes/reportes.component';
 
 export const routes: Routes = [
     {
@@ -38,6 +41,21 @@ export const routes: Routes = [
                 path: 'me',
                 component: MeComponent,
                 title: 'Me',
+            },
+            {
+                path: 'eventos',
+                component: EventosComponent,
+                title: 'Eventos',
+            },
+            {
+                path: 'estadisticas',
+                component: EstadisticasComponent,
+                title: 'Estadisticas',
+            },
+            {
+                path: 'reportes',
+                component: ReportesComponent,
+                title: 'Reportes',
             },
             {
                 path: '',

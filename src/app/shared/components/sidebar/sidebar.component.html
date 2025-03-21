@@ -17,6 +17,12 @@
 <aside
     class="fixed top-0 left-0 z-40 w-64 h-screen bg-gray-50 transition-transform -translate-x-full peer-checked:translate-x-0 sm:translate-x-0 ">
     <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 flex flex-col">
+        <!-- Logo o Nombre -->
+        <div class="flex items-center justify-center p-4">
+            <!-- Si tienes un logo, usa <img> en lugar de <span> -->
+            <!-- <img src="assets/Logo.png" alt="EventReservas Logo" class="w-10 h-10 mr-2"> -->
+            <span class="text-xl font-bold text-gray-900 dark:text-white">Admin EventReservas</span>
+        </div>
         <ul class="space-y-2 font-medium">
             <li>
                 <a routerLink="/layout/dashboard" routerLinkActive="bg-gray-200 dark:bg-gray-700"
@@ -31,6 +37,53 @@
                     <span class="ms-3">Inicio</span>
                 </a>
             </li>
+            <li>
+                <a routerLink="/layout/eventos" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M3 4a1 1 0 011-1h2V2a1 1 0 112 0v1h8V2a1 1 0 112 0v1h2a1 1 0 011 1v16a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm2 4v12h14V8H5zm2 2h2v2H7v-2zm4 0h6v2h-6v-2zm0 4h6v2h-6v-2z" />
+                    </svg>
+                    <span class="ms-3">Eventos</span>
+                </a>
+            </li>
+
+            <li *ngIf="userRole == 'admin'">
+                <a routerLink="/layout/estadisticas" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 19h16v2H4v-2zm2-4h2v4H6v-4zm4-4h2v8h-2v-8zm4-6h2v14h-2V5zm4 2h2v12h-2V7z" />
+                    </svg>
+                    <span class="ms-3">Estadísticas</span>
+                </a>
+            </li>
+
+            <li>
+                <a routerLink="/layout/reportes" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M6 2a1 1 0 00-1 1v18a1 1 0 001 1h12a1 1 0 001-1V7.414A1 1 0 0018.586 6L13 0H6zm2 2h4v4h4v12H8V4z" />
+                    </svg>
+                    <span class="ms-3">Reportes</span>
+                </a>
+            </li>
+
+            <li *ngIf="userRole == 'admin'">
+                <a routerLink="/layout/usuarios" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
+                    </svg>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+
             <li>
                 <a routerLink="/layout/me" routerLinkActive="bg-gray-200 dark:bg-gray-700"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">

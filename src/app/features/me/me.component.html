@@ -1,18 +1,100 @@
-<div class="flex flex-col items-center justify-center min-h-screen ">
-    <div class="mb-4 text-center">
-        <h2 class="text-2xl font-bold text-gray-900">¡Bienvenido a nuestro sitio!</h2>
-        <p class="text-sm text-gray-600">Estamos encantados de tenerte aquí.</p>
-    </div>
-    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <div class="text-center mb-6">
-            <img class="w-24 h-24 rounded-full mx-auto" src="assets/victor.jpg" alt="User Avatar">
-            <h3 class="text-xl font-bold text-gray-900 mt-4">{{ user.email }}</h3>
-            <p class="text-sm text-gray-600">Desarrollador Backend</p>
+<div class="h-screen w-full flex justify-center items-center">
+    <div class="w-full h-full bg-white shadow-md rounded-lg p-4 flex flex-col">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-3xl font-bold text-gray-900">Hello, {{ user.nombre.split(' ')[0] }}</h1>
+            <div class="flex items-center space-x-2 text-gray-500">
+                <span>{{currentDate}}</span>
+                <span class="text-xl">📅</span>
+            </div>
         </div>
-        <div class="text-center">
-            <p class="text-sm text-gray-600 mb-4">Soy un desarrollador backend con más de 5 años de experiencia en la
-                creación de aplicaciones web escalables y seguras. Me apasiona aprender nuevas tecnologías y mejorar
-                continuamente mis habilidades.</p>
+
+        <!-- Profile Info -->
+        <div class="flex items-center space-x-3 mb-6">
+            <img class="w-20 h-20 rounded-full" src="assets/victor.jpg" alt="User Avatar">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">{{ user.nombre }}</h3>
+                <p class="text-gray-600">{{ user.email }}</p>
+            </div>
+            <button (click)="openModal()"
+                class="ml-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                Edit
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3 mt-6">
+            <!-- Tarjeta: Nombre -->
+            <div class="bg-blue-100 shadow-md rounded-lg p-6 flex flex-col items-center">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <h2 class="text-lg font-semibold text-gray-700">Nombre</h2>
+                </div>
+                <p class="text-xl font-bold text-gray-900 mt-2">{{ user.nombre }}</p>
+            </div>
+
+            <!-- Tarjeta: Email -->
+            <div class="bg-green-100 shadow-md rounded-lg p-6 flex flex-col items-center">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                    </svg>
+                    <h2 class="text-lg font-semibold text-gray-700">Email</h2>
+                </div>
+                <p class="text-xl font-bold text-gray-900 mt-2">{{ user.email }}</p>
+            </div>
+
+            <!-- Tarjeta: Rol -->
+            <div class="bg-yellow-100 shadow-md rounded-lg p-6 flex flex-col items-center">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <h2 class="text-lg font-semibold text-gray-700">Rol</h2>
+                </div>
+                <p class="text-xl font-bold text-gray-900 mt-2">{{ user.rol }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="editModal" class="fixed inset-0 bg-[rgba(0,0,0,0.548)] flex justify-center items-center hidden">
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Editar Perfil</h2>
+            <form>
+                <!-- Campo Nombre -->
+                <div class="mb-4">
+                    <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                    <input type="text" id="nombre" [(ngModel)]="user.nombre" name="nombre"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <!-- Campo Email -->
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" [(ngModel)]="user.email" name="email"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <!-- Campo Contraseña -->
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <input type="password" id="password" [(ngModel)]="user.password" name="password"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <!-- Botones -->
+                <div class="flex justify-end space-x-2">
+                    <button type="button" (click)="closeModal()"
+                        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Cancelar</button>
+                    <button type="submit" (click)="updateUser()"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
