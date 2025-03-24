@@ -1,4 +1,5 @@
 export interface AuthInterface {
+    id?: number;
     nombre: string;
     email: string;
     password: string;
