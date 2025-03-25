@@ -15,6 +15,7 @@ import { ReservauserComponent } from './features/usuarios/reservas/reservauser.c
 import { PerfiluserComponent } from './features/usuarios/perfil/perfiluser.component';
 import { LoginuserComponent } from './features/usuarios/auth/login/loginuser.component';
 import { RegisteruserComponent } from './features/usuarios/auth/register/registeruser.component';
+import { UserGuard } from './core/guards/user.guard';
 
 export const routes: Routes = [
     // La primera parte de las rutas deben llevar a la landing page de la aplicación
@@ -63,7 +64,8 @@ export const routes: Routes = [
                 path: '**',
                 redirectTo: 'eventos',
             }
-        ]
+        ],
+        canActivateChild: [UserGuard],
     },
     {
         path: 'login',

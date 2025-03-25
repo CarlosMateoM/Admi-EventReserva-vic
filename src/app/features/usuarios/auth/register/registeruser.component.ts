@@ -1,37 +1,50 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+import { AlertComponent } from '../../../alert/alert.component';
 
 @Component({
   selector: 'app-registeruser',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AlertComponent],
   templateUrl: './registeruser.component.html',
   styleUrl: './registeruser.component.css'
 })
-export class RegisteruserComponent {
+export class RegisteruserComponent implements OnInit {
 
-  registerForm: FormGroup;
+  private formBuilder = inject(FormBuilder);
+  private authService: AuthService = inject(AuthService);
+
   isLoading: boolean = false;
   alertMessage: string | null = null;
-  alertType: string = 'error';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
+  registerForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group({
-      nombre: ['', [Validators.required]],
+
+  ngOnInit(): void {
+    this.registerForm = this.formBuilder.group({
+      nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
+      password: ['', Validators.required],
+      rol: ['usuario']
+    })
   }
 
   register() {
     if (this.registerForm.invalid) return;
-
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      this.alertMessage = 'Registro exitoso';
-      this.alertType = 'success';
-    }, 2000);
+    this.authService.createUser(this.registerForm.value).subscribe({
+      next: response => {
+        this.alertMessage = response.message;
+        this.alertType = 'success';
+        this.isLoading = false;
+      },
+      error: error => {
+        this.alertMessage = error.error.message;
+        this.alertType = 'error';
+        this.isLoading = false;
+      }
+    });
   }
 }

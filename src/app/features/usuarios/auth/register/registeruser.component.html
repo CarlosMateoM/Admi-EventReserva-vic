@@ -11,7 +11,7 @@
         <div class="w-full md:w-1/2 p-8 flex flex-col justify-center text-white">
             <h2 class="text-3xl font-bold text-center mb-4">Crear Cuenta</h2>
 
-            <!-- <app-alert *ngIf="alertMessage" [message]="alertMessage" [alertType]="alertType"></app-alert> -->
+            <app-alert *ngIf="alertMessage" [message]="alertMessage" [alertType]="alertType"></app-alert>
 
             <form [formGroup]="registerForm" (ngSubmit)="register()" class="mt-6 space-y-6 animate-slide-up">
                 <!-- Nombre -->
@@ -57,7 +57,7 @@
                             class="w-full px-4 py-3 pl-12 bg-white/20 border border-white/30 rounded-md text-white placeholder-gray-300 focus:outline-none focus:ring-white focus:border-white">
                     </div>
                 </div>
-                
+
                 <!-- Botón -->
                 <div>
                     <button type="submit"

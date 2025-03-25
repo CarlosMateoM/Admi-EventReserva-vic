@@ -5,7 +5,7 @@
         <div class="w-full md:w-1/2 p-8 flex flex-col justify-center text-white">
             <h2 class="text-3xl font-bold text-center mb-4">Iniciar Sesión</h2>
 
-            <!-- <app-alert *ngIf="alertMessage" [message]="alertMessage" [alertType]="alertType"></app-alert> -->
+            <app-alert *ngIf="alertMessage" [message]="alertMessage" [alertType]="alertType"></app-alert>
 
             <form [formGroup]="loginForm" (ngSubmit)="login()" class="mt-6 space-y-6 animate-slide-up">
                 <!-- Email -->

@@ -1,36 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+import { AlertComponent } from '../../../alert/alert.component';
 
 @Component({
   selector: 'app-loginuser',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AlertComponent],
   templateUrl: './loginuser.component.html',
   styleUrl: './loginuser.component.css'
 })
 export class LoginuserComponent {
 
-  loginForm: FormGroup;
+  private formBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
+  private authService: AuthService = inject(AuthService);
+
+  loginForm!: FormGroup;
   isLoading: boolean = false;
   alertMessage: string | null = null;
-  alertType: string = 'error';
+  alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
 
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
+  ngOnInit(): void {
+    this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
+      password: ['', Validators.required]
+    })
   }
 
   login() {
     if (this.loginForm.invalid) return;
-
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      this.alertMessage = 'Inicio de sesión exitoso'; // Simulación
-      this.alertType = 'success';
-    }, 2000);
+    this.authService.login(this.loginForm.value).subscribe({
+      next: response => {
+        this.authService.setToken(response.token);
+        this.isLoading = false;
+        this.router.navigate(['/layaoutuser/eventos']);
+      },
+      error: error => {
+        this.alertMessage = error.error.message;
+        this.alertType = 'error';
+        this.isLoading = false;
+      }
+    });
   }
 }

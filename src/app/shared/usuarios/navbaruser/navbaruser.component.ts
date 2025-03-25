@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbaruser',
@@ -9,6 +10,10 @@ import { RouterLink } from '@angular/router';
   styleUrl: './navbaruser.component.css'
 })
 export class NavbaruserComponent {
+
+  private authService: AuthService = inject(AuthService);
+  private router: Router = inject(Router);
+
   usuario = {
     nombre: "Victor Alfonso",
     foto: "assets/victor.webp" // O cualquier URL de imagen
@@ -23,5 +28,10 @@ export class NavbaruserComponent {
 
   toggleNotificaciones() {
     this.mostrarNotificaciones = !this.mostrarNotificaciones;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/loginUser']);
   }
 }
