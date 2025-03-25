@@ -1,0 +1,12 @@
+<section class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Eventos Disponibles</h2>
+    <div class="space-y-4">
+        <div class="p-4 border rounded-lg shadow" *ngFor="let evento of eventos">
+            <h3 class="text-lg font-bold">{{ evento.titulo }}</h3>
+            <p class="text-gray-700">{{ evento.descripcion }}</p>
+            <p class="text-gray-600">Fecha: {{ evento.fechaInicio }} - {{ evento.fechaFin }}</p>
+            <p class="text-gray-600">Capacidad: {{ evento.capacidad }} personas</p>
+            <button class="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Reservar</button>
+        </div>
+    </div>
+</section>

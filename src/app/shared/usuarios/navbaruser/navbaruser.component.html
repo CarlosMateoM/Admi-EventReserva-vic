@@ -1,0 +1,54 @@
+<header
+    class="bg-white/10 border border-white/30 text-white py-4 shadow-md backdrop-blur-lg animate-slide-up z-50 relative">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <h1 class="text-2xl font-bold">EventReservas</h1>
+
+        <nav class="flex items-center space-x-6">
+            <a routerLink="/layaoutuser/eventos" class="hover:text-gray-300 transition">Eventos</a>
+            <a routerLink="/layaoutuser/reservas" class="hover:text-gray-300 transition">Reservas</a>
+            <a routerLink="/layaoutuser/perfil" class="hover:text-gray-300 transition">Perfil</a>
+
+            <!-- Campanita de Notificaciones -->
+            <div class="relative cursor-pointer">
+                <button (click)="toggleNotificaciones()" class="relative p-2">
+                    <svg class="w-7 h-7 text-white hover:text-gray-300 transition" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14V10a6 6 0 10-12 0v4c0 .386-.148.735-.405 1.005L4 17h5m6 0a3 3 0 11-6 0">
+                        </path>
+                    </svg>
+                    <!-- Contador de notificaciones -->
+                    <span *ngIf="notificaciones.length > 0"
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        {{ notificaciones.length }}
+                    </span>
+                </button>
+
+                <!-- Panel de notificaciones -->
+                <div *ngIf="mostrarNotificaciones"
+                    class="absolute right-0 mt-2 w-64 bg-white text-black rounded-md shadow-lg border border-gray-300 z-50">
+                    <ul class="divide-y divide-gray-200">
+                        <li *ngFor="let noti of notificaciones" class="p-3 text-sm hover:bg-gray-100 cursor-pointer">
+                            {{ noti.mensaje }}
+                        </li>
+                    </ul>
+                    <div *ngIf="notificaciones.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                        No hay notificaciones
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usuario -->
+            <div class="relative flex items-center space-x-3">
+                <img [src]="usuario.foto || 'assets/default-user.png'" alt="Usuario"
+                    class="w-9 h-9 rounded-full border border-gray-300">
+                <span class="text-white font-semibold">{{ usuario.nombre }}</span>
+            </div>
+
+            <!-- Botón de Salir -->
+            <button class="bg-red-500 px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-all">
+                Salir
+            </button>
+        </nav>
+    </div>
+</header>

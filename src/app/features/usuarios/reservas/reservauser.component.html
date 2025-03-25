@@ -1,0 +1,10 @@
+<section class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Tus Reservas</h2>
+    <div class="space-y-4">
+        <div class="p-4 border rounded-lg shadow" *ngFor="let reserva of reservas">
+            <h3 class="text-lg font-bold">{{ reserva.titulo }}</h3>
+            <p class="text-gray-700">{{ reserva.detalles }}</p>
+            <button class="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Cancelar Reserva</button>
+        </div>
+    </div>
+</section>

@@ -8,13 +8,62 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { EventosComponent } from './features/eventos/eventos.component';
 import { EstadisticasComponent } from './features/estadisticas/estadisticas.component';
 import { ReportesComponent } from './features/reportes/reportes.component';
+import { LandingComponent } from './shared/landing/landing.component';
+import { LayoutuserComponent } from './shared/usuarios/layoutuser/layoutuser.component';
+import { EventosuserComponent } from './features/usuarios/eventos/eventosuser.component';
+import { ReservauserComponent } from './features/usuarios/reservas/reservauser.component';
+import { PerfiluserComponent } from './features/usuarios/perfil/perfiluser.component';
+import { LoginuserComponent } from './features/usuarios/auth/login/loginuser.component';
+import { RegisteruserComponent } from './features/usuarios/auth/register/registeruser.component';
 
 export const routes: Routes = [
+    // La primera parte de las rutas deben llevar a la landing page de la aplicación
     {
         path: '',
-        component: LoginComponent,
-        title: 'Login',
+        component: LandingComponent,
+        title: 'EventReserva', // Título de la página principal
+    },
+    {
+        path: 'loginUser',
+        component: LoginuserComponent,
+        title: 'Login'
+    },
+    {
+        path: 'registerUser',
+        component: RegisteruserComponent,
+        title: 'Register'
+    },
+    {
+        path: 'layaoutuser',
+        component: LayoutuserComponent,
+        title: 'Dashboard',
+        children: [
+            {
+                path: 'eventos',
+                component: EventosuserComponent,
+                title: 'Eventos',
+            },
+            {
+                path: 'reservas',
+                component: ReservauserComponent,
+                title: 'Reservas',
 
+            },
+            {
+                path: 'perfil',
+                component: PerfiluserComponent,
+                title: 'Perfil',
+            },
+            {
+                path: '',
+                redirectTo: 'eventos',
+                pathMatch: 'full'
+            },
+            {
+                path: '**',
+                redirectTo: 'eventos',
+            }
+        ]
     },
     {
         path: 'login',
@@ -71,6 +120,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'login',
+        redirectTo: '',
     }
 ];

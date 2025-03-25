@@ -31,6 +31,8 @@ export class EventosComponent implements OnInit {
   // Variables para controlar la visibilidad de modales
   showAddModal = false;
   showEditModal = false;
+  showConfirmDeleteModal = false;
+  eventIdToDelete: number | null = null;
 
   // Variables para el formulario de creación (usando ngModel)
   titulo: string = '';
@@ -126,5 +128,25 @@ export class EventosComponent implements OnInit {
     this.fecha_inicio = '';
     this.fecha_fin = '';
     this.capacidad = 1;
+  }
+
+  // Abre el modal de confirmación
+  openConfirmDeleteModal(eventId: number): void {
+    this.eventIdToDelete = eventId;
+    this.showConfirmDeleteModal = true;
+  }
+
+  // Cierra el modal de confirmación
+  closeConfirmDeleteModal(): void {
+    this.showConfirmDeleteModal = false;
+    this.eventIdToDelete = null;
+  }
+
+  // Confirma la eliminación del evento
+  confirmDeleteEvent(): void {
+    if (this.eventIdToDelete !== null) {
+      this.deleteEvent(this.eventIdToDelete);
+      this.closeConfirmDeleteModal();
+    }
   }
 }
