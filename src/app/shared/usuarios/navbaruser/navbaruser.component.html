@@ -1,5 +1,5 @@
 <header
-    class="bg-white/10 border border-white/30 text-white py-4 shadow-md backdrop-blur-lg animate-slide-up z-50 relative">
+    class="bg-white/10 border border-white/30 text-white py-4 shadow-md backdrop-blur-lg animate-slide-up z-50 relative ">
     <div class="container mx-auto flex justify-between items-center px-6">
         <h1 class="text-2xl font-bold">EventReservas</h1>
 
@@ -40,7 +40,7 @@
 
             <!-- Usuario -->
             <div class="relative flex items-center space-x-3">
-                <img [src]="usuario.foto || 'assets/default-user.png'" alt="Usuario"
+                <img [src]="foto || 'assets/default-user.png'" alt="Usuario"
                     class="w-9 h-9 rounded-full border border-gray-300">
                 <span class="text-white font-semibold">{{ usuario.nombre }}</span>
             </div>

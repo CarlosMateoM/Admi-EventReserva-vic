@@ -1,35 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { CreateEvent } from '../../eventos/interfaces/eventos.interface';
+import { EVENTOS_STORE } from '../../eventos/store/eventos.store';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-eventosuser',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, DatePipe],
   templateUrl: './eventosuser.component.html',
-  styleUrl: './eventosuser.component.css'
+  styleUrls: ['./eventosuser.component.css']
 })
-export class EventosuserComponent {
+export class EventosuserComponent implements OnInit {
+  private eventosStore = inject(EVENTOS_STORE);
+  eventos = this.eventosStore.eventos;
+  loading = this.eventosStore.loading;
+  error = this.eventosStore.error;
 
-  eventos = [
-    {
-      titulo: 'Evento 1',
-      descripcion: 'Descripción del evento 1',
-      fechaInicio: '2021-10-01',
-      fechaFin: '2021-10-03',
-      capacidad: 100,
-    },
-    {
-      titulo: 'Evento 2',
-      descripcion: 'Descripción del evento 2',
-      fechaInicio: '2021-10-05',
-      fechaFin: '2021-10-07',
-      capacidad: 200,
-    },
-    {
-      titulo: 'Evento 3',
-      descripcion: 'Descripción del evento 3',
-      fechaInicio: '2021-10-10',
-      fechaFin: '2021-10-12',
-      capacidad: 300,
-    },
-  ]
+  ngOnInit(): void {
+    // Cargar eventos solo si no hay datos en el store
+    this.eventosStore.loadEvents(false);
+  }
+
+  // Método para forzar la recarga de eventos si es necesario
+  reloadEvents(): void {
+    this.eventosStore.loadEvents(true);
+  }
 }

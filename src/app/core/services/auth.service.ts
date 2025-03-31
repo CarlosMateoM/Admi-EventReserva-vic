@@ -3,7 +3,7 @@ import { environment } from '../../enviroments/enviroment';
 import { HttpClient } from '@angular/common/http';
 import { AuthInterface, Me, UserLogin } from './interface/auth.interface';
 import { map, Observable, tap } from 'rxjs';
-import { UserStateService } from './state.service';
+import { AuthStateService } from './auth-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,7 @@ import { UserStateService } from './state.service';
 export class AuthService {
   private readonly API_URL = environment.apiUrl;
   private http: HttpClient = inject(HttpClient);
-  private userStateService: UserStateService = inject(UserStateService);
-
+  private authStateService: AuthStateService = inject(AuthStateService);
 
   createUser(user: AuthInterface): Observable<{ user: AuthInterface, message: string }> {
     return this.http.post<{ user: AuthInterface, message: string }>(`${this.API_URL}/register`, user).pipe(
@@ -20,16 +19,19 @@ export class AuthService {
     )
   }
 
-  login(user: UserLogin): Observable<{ token: string, usuario: { id: number, nombre: string, email: string, rol: string } }> {
-    return this.http.post<{ token: string, usuario: { id: number, nombre: string, email: string, rol: string } }>(`${this.API_URL}/login`, user).pipe(
-      map(response => response)
+  login(user: UserLogin): Observable<{ token: string, usuario: AuthInterface }> {
+    return this.http.post<{ token: string, usuario: AuthInterface }>(`${this.API_URL}/login`, user).pipe(
+      tap(response => {
+        this.setToken(response.token);
+        this.authStateService.setUser(response.usuario);
+      })
     );
   }
 
   me(): Observable<AuthInterface> {
     return this.http.get<AuthInterface>(`${this.API_URL}/me`).pipe(
       tap((user: AuthInterface) => {
-        this.userStateService.setUser(user); // Guarda el usuario en el estado
+        this.authStateService.setUser(user); // Guarda el usuario en el estado
       })
     );
   }
@@ -37,7 +39,7 @@ export class AuthService {
   updateUser(user: Me): Observable<Me> {
     return this.http.put<Me>(`${this.API_URL}/usuarios/${user.id}`, user).pipe(
       tap((user: Me) => {
-        this.userStateService.setUser(user); // Actualiza el usuario en el estado
+        this.authStateService.setUser(user); // Actualiza el usuario en el estado
       })
     );
   }
@@ -53,6 +55,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    this.userStateService.clearUser();
+    this.authStateService.clearUser();
   }
 }

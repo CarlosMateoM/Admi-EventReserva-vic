@@ -1,6 +1,6 @@
 // eventos.store.ts
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { finalize, mergeMap, of } from "rxjs";
+import { finalize, mergeMap, of, catchError, tap } from "rxjs";
 import { inject } from "@angular/core";
 import { EventService } from "../eventos.service";
 import { CreateEvent } from "../interfaces/eventos.interface";
@@ -27,68 +27,133 @@ export const EVENTOS_STORE = signalStore(
         const eventService = inject(EventService);
         return {
             // Carga los eventos desde la API
-            loadEvents: () => {
-                if (store.eventos().length > 0) {
-                    // Ya tenemos eventos, no volvemos a hacer la petición
+            loadEvents: (forceReload: boolean = false) => {
+                // Si ya tenemos eventos y no se fuerza la recarga, no hacemos nada
+                if (store.eventos().length > 0 && !forceReload) {
                     return;
                 }
-                of(patchState(store, { loading: true }))
+
+                patchState(store, { loading: true, error: '' });
+                
+                eventService.getEvents()
                     .pipe(
-                        mergeMap(() => eventService.getEvents()),
+                        catchError(error => {
+                            patchState(store, { 
+                                error: 'Error al cargar los eventos: ' + (error.message || 'Error desconocido'),
+                                loading: false 
+                            });
+                            return of([]);
+                        }),
                         finalize(() => patchState(store, { loading: false }))
                     )
-                    .subscribe((data) => {
-                        patchState(store, { eventos: data });
+                    .subscribe({
+                        next: (events) => {
+                            patchState(store, { eventos: events });
+                        }
                     });
             },
 
-            // Crea un nuevo evento. La API retorna { event, message }.
+            // Crea un nuevo evento
             createEvent: (nuevoEvento: CreateEvent) => {
-                of(patchState(store, { loading: true }))
+                patchState(store, { loading: true, error: '' });
+                
+                return eventService.createEvent(nuevoEvento)
                     .pipe(
-                        mergeMap(() => eventService.createEvent(nuevoEvento)),
+                        tap(response => {
+                            console.log('Respuesta del servidor:', response);
+                            // Verificar la estructura de la respuesta
+                            if (!response) {
+                                throw new Error('No se recibió respuesta del servidor');
+                            }
+                            if (!response.event) {
+                                throw new Error('La respuesta no contiene el evento creado');
+                            }
+                            // Verificar que el evento tenga las propiedades necesarias
+                            const requiredProps = ['titulo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'capacidad'];
+                            const missingProps = requiredProps.filter(prop => !(prop in response.event));
+                            if (missingProps.length > 0) {
+                                throw new Error(`El evento no tiene las propiedades requeridas: ${missingProps.join(', ')}`);
+                            }
+                        }),
+                        catchError(error => {
+                            console.error('Error al crear evento:', error);
+                            patchState(store, { 
+                                error: 'Error al crear el evento: ' + (error.message || 'Error desconocido'),
+                                loading: false 
+                            });
+                            throw error;
+                        }),
                         finalize(() => patchState(store, { loading: false }))
                     )
-                    .subscribe((resp: any) => {
-                        console.log('Respuesta al crear evento:', resp);
-                        // Asegúrate de extraer el objeto correcto de la respuesta
-                        const createdEvent = resp.event || resp.eventos || resp; // Ajusta según la forma real
-                        const currentEvents = store.eventos();
-                        patchState(store, { eventos: [...currentEvents, createdEvent] });
+                    .subscribe({
+                        next: (response) => {
+                            const currentEvents = store.eventos();
+                            patchState(store, { 
+                                eventos: [response.event, ...currentEvents],
+                                error: ''
+                            });
+                        }
                     });
             },
 
-
-            // Actualiza un evento. La API retorna { event, message }.
+            // Actualiza un evento
             updateEvent: (evento: Partial<CreateEvent>) => {
-                of(patchState(store, { loading: true }))
+                patchState(store, { loading: true, error: '' });
+                
+                eventService.updateEvent(evento)
                     .pipe(
-                        mergeMap(() => eventService.updateEvent(evento)),
+                        tap(response => {
+                            console.log('Respuesta de actualización:', response);
+                        }),
+                        catchError(error => {
+                            console.error('Error al actualizar evento:', error);
+                            patchState(store, { 
+                                error: 'Error al actualizar el evento: ' + (error.message || 'Error desconocido'),
+                                loading: false 
+                            });
+                            throw error;
+                        }),
                         finalize(() => patchState(store, { loading: false }))
                     )
-                    .subscribe((resp: any) => {
-                        // Si resp.event existe, usamos eso, sino asumimos que resp es el evento actualizado
-                        const updatedEvent = resp.event || resp;
-                        const updatedEvents = store.eventos().map(ev =>
-                            ev.id === updatedEvent.id ? updatedEvent : ev
-                        );
-                        patchState(store, { eventos: updatedEvents });
+                    .subscribe({
+                        next: (response) => {
+                            if (response && response.event) {
+                                const updatedEvents = store.eventos().map(ev =>
+                                    ev.id === response.event.id ? response.event : ev
+                                );
+                                patchState(store, { eventos: updatedEvents, error: '' });
+                            } else {
+                                console.error('Respuesta inesperada al actualizar evento:', response);
+                                patchState(store, {
+                                    error: 'Error: Respuesta inesperada del servidor'
+                                });
+                            }
+                        }
                     });
             },
 
-
-            // Elimina un evento. La API retorna { message }.
+            // Elimina un evento
             deleteEvent: (id: number) => {
-                of(patchState(store, { loading: true }))
+                patchState(store, { loading: true, error: '' });
+                
+                eventService.deleteEvent(id)
                     .pipe(
-                        mergeMap(() => eventService.deleteEvent(id)),
+                        catchError(error => {
+                            patchState(store, { 
+                                error: 'Error al eliminar el evento: ' + (error.message || 'Error desconocido'),
+                                loading: false 
+                            });
+                            throw error;
+                        }),
                         finalize(() => patchState(store, { loading: false }))
                     )
-                    .subscribe(() => {
-                        const filteredEvents = store.eventos().filter(ev => ev.id !== id);
-                        patchState(store, { eventos: filteredEvents });
+                    .subscribe({
+                        next: () => {
+                            const filteredEvents = store.eventos().filter(ev => ev.id !== id);
+                            patchState(store, { eventos: filteredEvents, error: '' });
+                        }
                     });
-            },
+            }
         };
     })
 );

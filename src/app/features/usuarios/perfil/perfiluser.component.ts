@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-perfiluser',
@@ -6,6 +7,12 @@ import { Component } from '@angular/core';
   templateUrl: './perfiluser.component.html',
   styleUrl: './perfiluser.component.css'
 })
-export class PerfiluserComponent {
+export class PerfiluserComponent implements OnInit{
+
+  private authService: AuthService = inject(AuthService);
+
+  ngOnInit(): void {
+      
+  }
 
 }

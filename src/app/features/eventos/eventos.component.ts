@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { UserStateService } from '../../core/services/state.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Me } from '../../core/services/interface/auth.interface';
 import { CreateEvent } from './interfaces/eventos.interface';
 import { FormsModule } from '@angular/forms';
 import { EVENTOS_STORE } from './store/eventos.store';
+import { AuthStateService } from '../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-eventos',
@@ -16,7 +16,7 @@ import { EVENTOS_STORE } from './store/eventos.store';
 })
 export class EventosComponent implements OnInit {
   private authService: AuthService = inject(AuthService);
-  private userStateService: UserStateService = inject(UserStateService);
+  private userStateService: AuthStateService = inject(AuthStateService);
   private eventosStore = inject(EVENTOS_STORE);
 
   currentDate: string = '';
@@ -50,9 +50,9 @@ export class EventosComponent implements OnInit {
       day: 'numeric'
     });
 
-    const cachedUser = this.userStateService.getUser();
-    if (cachedUser) {
-      this.setUser(cachedUser);
+    const storedUser = this.user && this.user.id ? this.userStateService.getUser() : null;
+    if (storedUser) {
+      this.setUser(storedUser);
     } else {
       this.me();
     }

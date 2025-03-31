@@ -2,18 +2,21 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Me } from '../../core/services/interface/auth.interface';
-import { UserStateService } from '../../core/services/state.service';
 import { FormsModule } from '@angular/forms';
+import { AuthStateService } from '../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-me',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './me.component.html',
   styleUrl: './me.component.css'
 })
 export class MeComponent implements OnInit {
   private authService: AuthService = inject(AuthService);
-  private userStateService: UserStateService = inject(UserStateService);
+  private authStateService = inject(AuthStateService);
+  // user = this.authStateService.getUser();
+
   user: Me = {
     id: 0,
     nombre: '',
@@ -31,20 +34,24 @@ export class MeComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     });
-    const cachedUser = this.userStateService.getUser();
-    if (cachedUser) {
-      this.user = cachedUser; // Usa el usuario almacenado en el estado
+
+    const storedUser = this.user && this.user.id ? this.authStateService.getUser() : null;
+    if (storedUser) {
+      this.setUser(storedUser);
     } else {
-      this.me(); // Si no hay usuario en el estado, haz la solicitud
+      this.me();
     }
   }
 
   me() {
-    this.authService.me().subscribe(response => {
-      this.user = response;
-    }, error => {
-      this.message = error.message;
-    })
+    this.authService.me().subscribe({
+      next: response => {
+        this.user = response;
+      },
+      error: error => {
+        this.message = error.message;
+      }
+    });
   }
 
   openModal() {
@@ -57,14 +64,18 @@ export class MeComponent implements OnInit {
     if (modal) modal.classList.add('hidden');
   }
 
-  updateUser() {
-    this.authService.updateUser(this.user).subscribe(response => {
-      this.user = response;
-      this.closeModal();
-    }, error => {
-      this.message = error.message;
-    })
+  setUser(user: Me): void {
+    this.user = user;
   }
 
-
+  updateUser() {
+    this.authService.updateUser(this.user).subscribe({
+      next: response => {
+        this.user = response;
+        this.closeModal();
+      }, error: error => {
+        this.message = error.message;
+      }
+    });
+  }
 }
