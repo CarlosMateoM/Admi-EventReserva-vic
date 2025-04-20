@@ -5,9 +5,12 @@ import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AlertComponent } from '../../../alert/alert.component';
 
+
+
 @Component({
   selector: 'app-loginuser',
   imports: [CommonModule, ReactiveFormsModule, RouterLink, AlertComponent],
+  providers: [],
   templateUrl: './loginuser.component.html',
   styleUrl: './loginuser.component.css'
 })

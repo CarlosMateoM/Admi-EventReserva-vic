@@ -18,3 +18,8 @@ export interface Me {
     password: string;
     rol: string;
 }
+
+export interface UpdatePassword {
+    id: number;
+    password: string;
+}

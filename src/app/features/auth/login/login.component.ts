@@ -1,46 +1,50 @@
 import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserLogin } from '../../../core/services/interface/auth.interface';
 import { AlertComponent } from '../../alert/alert.component';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-login',
   imports: [RouterLink, ReactiveFormsModule, AlertComponent, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  standalone: true,
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
-  loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+  private fb: FormBuilder = inject(FormBuilder);
+
+  loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
   });
+
   alertMessage: string = '';
   alertType: 'success' | 'error' | 'warning' | 'info' = 'info';
   isLoading: boolean = false;
 
-
   login(): void {
     if (this.loginForm.invalid) return;
+    
     this.isLoading = true;
-    const credencials: UserLogin = this.loginForm.value as { email: string; password: string };
+    this.alertMessage = '';
+    const credentials: UserLogin = this.loginForm.value;
 
-    // Simular un retardo de 2 segundos
-    setTimeout(() => {
-      this.authService.login(credencials).subscribe(response => {
-        this.authService.setToken(response.token);
+    this.authService.login(credentials).subscribe({
+      next: () => {
         this.isLoading = false;
         this.router.navigate(['/layout']);
-      }, error => {
+      },
+      error: (error) => {
+        console.error('Error en login:', error);
         this.isLoading = false;
-        this.alertMessage = error.error.message;
+        this.alertMessage = error.error?.message || 'Error al iniciar sesión';
         this.alertType = 'error';
-      });
-    }, 1000); // 2000 milisegundos = 2 segundos
+      }
+    });
   }
-
-
 }

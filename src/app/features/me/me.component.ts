@@ -34,12 +34,12 @@ export class MeComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     });
-
-    const storedUser = this.user && this.user.id ? this.authStateService.getUser() : null;
+ // Obtener el usuario directamente del estado
+    const storedUser = this.authStateService.getUser();
     if (storedUser) {
-      this.setUser(storedUser);
+      this.user = storedUser;
     } else {
-      this.me();
+      this.me(); // Llama al método para obtener el usuario del servidor si no está en el estado
     }
   }
 

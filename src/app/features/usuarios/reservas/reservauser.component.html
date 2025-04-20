@@ -1,10 +1,58 @@
-<section class="bg-white p-6 rounded-lg shadow-md">
-    <h2 class="text-xl font-semibold mb-4">Tus Reservas</h2>
-    <div class="space-y-4">
-        <div class="p-4 border rounded-lg shadow" *ngFor="let reserva of reservas">
-            <h3 class="text-lg font-bold">{{ reserva.titulo }}</h3>
-            <p class="text-gray-700">{{ reserva.detalles }}</p>
-            <button class="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Cancelar Reserva</button>
-        </div>
+<section class="bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden">
+
+  <!-- Mensaje de carga -->
+  <div *ngIf="loading()" class="text-center py-4">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+    <p class="mt-2 text-gray-600">Cargando...</p>
+  </div>
+  <div *ngIf="!loading() && reservass().length == 0" class="text-gray-500 text-center py-4">
+    No hay reservas hechas.
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+    <span class="block sm:inline">{{error}}</span>
+  </div>
+
+  <!-- Lista de reservas mejorada -->
+  <div class="bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden"
+    *ngIf="!loading() && !error && reservas.length > 0">
+    <div class="bg-gradient-to-r from-indigo-500 to-blue-500 px-6 py-4">
+      <h2 class="text-white text-xl font-bold">Mis Reservas</h2>
     </div>
+    <div class="divide-y divide-gray-100">
+      <div
+        class="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-shadow hover:shadow-lg"
+        *ngFor="let reserva of reservas">
+        <!-- Info principal -->
+        <div class="flex-1">
+          <p class="text-lg font-semibold text-gray-800 mb-1">{{ reserva.evento.titulo }}</p>
+          <p class="text-gray-600 mb-2">{{ reserva.evento.descripcion }}</p>
+          <p class="text-gray-700 mt-2 flex items-center gap-2">
+            Estado:
+            <span class="font-semibold px-2 py-1 rounded-lg text-xs" [ngClass]="{
+                'bg-green-100 text-green-700': reserva.estado === 'confirmada',
+                'bg-yellow-100 text-yellow-700': reserva.estado === 'pendiente',
+                'bg-red-100 text-red-700': reserva.estado === 'cancelada'
+              }">
+              {{ reserva.estado | titlecase }}
+            </span>
+          </p>
+        </div>
+        <!-- Botones de acción -->
+        <div class="flex flex-col md:flex-row gap-2 md:ml-4">
+          <button
+            class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            (click)="updateReserva(reserva.id, 'cancelada')" [disabled]="reserva.estado === 'cancelada'">
+            Cancelar Reserva
+          </button>
+          <button
+            class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            (click)="updateReserva(reserva.id, 'confirmada')" [disabled]="reserva.estado === 'confirmada'">
+            Confirmar Reserva
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
