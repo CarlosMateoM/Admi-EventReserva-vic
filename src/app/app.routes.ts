@@ -16,6 +16,7 @@ import { PerfiluserComponent } from './features/usuarios/perfil/perfiluser.compo
 import { LoginuserComponent } from './features/usuarios/auth/login/loginuser.component';
 import { RegisteruserComponent } from './features/usuarios/auth/register/registeruser.component';
 import { UserGuard } from './core/guards/user.guard';
+import { ListUserComponent } from './features/list-user/list-user.component';
 
 export const routes: Routes = [
     // La primera parte de las rutas deben llevar a la landing page de la aplicación
@@ -107,6 +108,11 @@ export const routes: Routes = [
                 path: 'reportes',
                 component: ReportesComponent,
                 title: 'Reportes',
+            },
+            {
+                path: 'listusuarios',
+                component: ListUserComponent,
+                title: 'usuarios',
             },
             {
                 path: '',
