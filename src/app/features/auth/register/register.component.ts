@@ -29,17 +29,14 @@ export class RegisterComponent {
     this.isLoading = true;
     const credencials: AuthInterface = this.registerForm.value as { nombre: string, email: string; password: string, rol: string };
 
-    // Simular un retardo de 2 segundos
-    setTimeout(() => {
-      this.authService.createUser(credencials).subscribe(response => {
-        this.alertMessage = response.message;
-        this.alertType = 'success';
-        this.isLoading = false;
-      }, error => {
-        this.alertMessage = error.error.message;
-        this.alertType = 'error';
-        this.isLoading = false;
-      });
-    }, 2000);
+    this.authService.createUser(credencials).subscribe(response => {
+      this.alertMessage = response.message;
+      this.alertType = 'success';
+      this.isLoading = false;
+    }, error => {
+      this.alertMessage = error.error.message;
+      this.alertType = 'error';
+      this.isLoading = false;
+    });
   }
 }

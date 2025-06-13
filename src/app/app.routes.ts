@@ -116,12 +116,12 @@ export const routes: Routes = [
             },
             {
                 path: '',
-                redirectTo: 'dashboard',
+                redirectTo: 'eventos',
                 pathMatch: 'full'
             },
             {
                 path: '**',
-                redirectTo: 'dashboard',
+                redirectTo: 'eventos',
             }
         ],
         canActivateChild: [AuthGuard],
